@@ -3,6 +3,7 @@ import axios from 'axios';
 
 interface RallyData {
   name: string;
+  href: string;
   description: string;
   players_total: number;
   players_finished: number;
@@ -82,7 +83,7 @@ function App() {
                 className="border-b bg-gray-800 border-gray-700 hover:bg-gray-700"
               >
                 <td className="px-6 py-4 font-medium whitespace-nowrap">
-                  {rally.name}
+                  <a href={rally.href} target="_blank" rel="noopener noreferrer">{rally.name}</a>
                 </td>
                 <td className="px-6 py-4">{rally.description}</td>
                 <td className="px-6 py-4">{rally.players_total}</td>
