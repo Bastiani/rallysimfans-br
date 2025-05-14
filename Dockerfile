@@ -19,8 +19,15 @@ RUN apk add --no-cache openssl
 # Criar diretório para certificados SSL
 RUN mkdir -p /etc/nginx/ssl
 
+# Remover configuração padrão do Nginx
+RUN rm -rf /usr/share/nginx/html/*
+
 # Copiar os arquivos de build
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/dist/ /usr/share/nginx/html/
+
+# Garantir permissões corretas
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html
 
 # Copiar configuração do Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
