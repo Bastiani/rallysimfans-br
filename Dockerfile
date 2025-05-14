@@ -1,12 +1,36 @@
-FROM node:23-slim AS build
+# Stage 1: Build da aplicação React + Vite
+FROM node:20-alpine AS build
 WORKDIR /app
+
+# Copiar arquivos de dependências
 COPY package*.json ./
-RUN npm install
+RUN npm ci
+
+# Copiar código fonte e buildar
 COPY . .
 RUN npm run build
 
+# Stage 2: Configuração do Nginx com SSL
 FROM nginx:alpine
+
+# Instalar dependências necessárias para SSL
+RUN apk add --no-cache openssl
+
+# Criar diretório para certificados SSL
+RUN mkdir -p /etc/nginx/ssl
+
+# Copiar os arquivos de build
 COPY --from=build /app/dist /usr/share/nginx/html
+
+# Copiar configuração do Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expor portas HTTP e HTTPS
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 443
+
+# Script de inicialização para gerar certificados SSL e iniciar Nginx
+COPY docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
