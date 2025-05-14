@@ -27,7 +27,7 @@ function App() {
     const fetchData = async () => {
       console.log('Fetching rally data...');
       try {
-        const response = await axios.get('http://134.122.26.139:3000/api/rally');
+        const response = await axios.get('https://api.rafaelbastiani.com:3000/api/online/rally-table');
         console.log(response.data);
         setRallyData(response.data);
       } catch (err) {
